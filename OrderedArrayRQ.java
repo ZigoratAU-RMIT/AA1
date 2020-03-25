@@ -26,12 +26,6 @@ public class OrderedArrayRQ implements Runqueue {
     	capacity = 20;
     	ArrayItems = new Item[capacity];
     	storeItems = 0;
-//    	if (size >= data.length) {
-//    		E[] newData = (E[])(new Object[size * 2 + 1]); 
-    	//System.arraycopy(data, 0, newData, 0, size); 
-    	//data = newData;
-//    		}
-    	
         // Implement Me
 
     }  // end of OrderedArrayRQ()
@@ -54,7 +48,7 @@ public class OrderedArrayRQ implements Runqueue {
     	}
     	else {
     		int i = storeItems;
-    		for(; (i>=1) && (ArrayItems[i-1].procLabel.compareTo(addItem.procLabel) < 0); i--) 
+    		for(; (i>=1) && (ArrayItems[i-1].vt > addItem.vt); i--) 
     			ArrayItems[i] = ArrayItems[i-1];
     		
     		ArrayItems[i] = addItem;
@@ -66,15 +60,35 @@ public class OrderedArrayRQ implements Runqueue {
     @Override
     public String dequeue() {
         // Implement me
+    	if(storeItems == 0)
+    		return "";
+    	else {    		
+        	Item deleteItem = ArrayItems[0];
+        	int i = 0;
+        	for(; i < storeItems - 1  ; i++ )
+        		ArrayItems[i] = ArrayItems[i+1];
+        	
+        	ArrayItems[storeItems - 1] = null;
+        	
+        	storeItems--;
 
-        return ""; // placeholder,modify this
+            return deleteItem.procLabel; // placeholder,modify this    	
+       }
     } // end of dequeue()
 
 
     @Override
     public boolean findProcess(String procLabel){
         // Implement me
-
+    	if(storeItems == 0)
+    		return false;
+    	else {
+        	int i = 0;
+        	for(; i < storeItems ; i++ ) 
+        		if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+        			return true;
+        	}    		
+    	}
         return false; // placeholder, modify this
     } // end of findProcess()
 
@@ -82,15 +96,38 @@ public class OrderedArrayRQ implements Runqueue {
     @Override
     public boolean removeProcess(String procLabel) {
         // Implement me
+    	if(storeItems == 0)
+    		return false;
+    	else {
+        	int i = 0;
+        	for(; i < storeItems ; i++ ) 
+        		if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+        			int j = i;
+        			ArrayItems[j] = null;
+                	for(; j < storeItems - 1  ; j++ )
+                		ArrayItems[j] = ArrayItems[j+1];
+                	storeItems--;
+        			return true;
+        	}    		
+    	}
 
         return false; // placeholder, modify this
     } // end of removeProcess()
 
 
     @Override
-    public int precedingProcessTime(String procLabel) {
+    public int precedingProcessTime(String procLabel) {    	
         // Implement me
-
+    	int sum = 0;
+    	int i = 0;
+    		for(; i < storeItems  ; i++ ) {
+    			if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+    				return sum;
+    			}
+    			else {
+    				sum = sum + ArrayItems[i].vt;
+    			}
+    		}
         return -1; // placeholder, modify this
     }// end of precedingProcessTime()
 
@@ -98,13 +135,27 @@ public class OrderedArrayRQ implements Runqueue {
     @Override
     public int succeedingProcessTime(String procLabel) {
         // Implement me
-
+    	int sum = 0;
+    	int i = 0;
+    		for(; i < storeItems  ; i++ ) {
+    			if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+    				int j = i;
+    				j++;
+                	for(; j < storeItems  ; j++ )
+                		sum = sum + ArrayItems[j].vt;
+                	return sum;
+    			}
+    		}
         return -1; // placeholder, modify this
     } // end of precedingProcessTime()
 
 
     @Override
     public void printAllProcesses(PrintWriter os) {
+    	int i = 0;
+    	for(; i < storeItems  ; i++ )
+    		System.out.print(ArrayItems[i].procLabel + "  ");
+    	System.out.println("");
         //Implement me
 
     } // end of printAllProcesses()
