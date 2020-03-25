@@ -1,5 +1,6 @@
 import java.io.PrintWriter;
 import java.lang.String;
+import java.util.Arrays;
 
 
 /**
@@ -15,7 +16,22 @@ public class OrderedArrayRQ implements Runqueue {
     /**
      * Constructs empty queue
      */
+	
+	private Item[] ArrayItems;
+	private int capacity;
+	private int storeItems;
+	
+
     public OrderedArrayRQ() {
+    	capacity = 20;
+    	ArrayItems = new Item[capacity];
+    	storeItems = 0;
+//    	if (size >= data.length) {
+//    		E[] newData = (E[])(new Object[size * 2 + 1]); 
+    	//System.arraycopy(data, 0, newData, 0, size); 
+    	//data = newData;
+//    		}
+    	
         // Implement Me
 
     }  // end of OrderedArrayRQ()
@@ -24,7 +40,26 @@ public class OrderedArrayRQ implements Runqueue {
     @Override
     public void enqueue(String procLabel, int vt) {
         // Implement me
-
+    	Item addItem = new Item();
+    	addItem.procLabel = procLabel;
+    	addItem.vt = vt;
+    	
+    	//Double if the array is full
+    	if(storeItems == capacity) {
+    		capacity = capacity * 2;
+    		ArrayItems = Arrays.copyOf(ArrayItems, capacity);   		
+    	}
+    	if(storeItems == 0) {
+    		ArrayItems[0] = addItem;
+    	}
+    	else {
+    		int i = storeItems;
+    		for(; (i>=1) && (ArrayItems[i-1].procLabel.compareTo(addItem.procLabel) < 0); i--) 
+    			ArrayItems[i] = ArrayItems[i-1];
+    		
+    		ArrayItems[i] = addItem;
+    	}
+    	storeItems++;
     } // end of enqueue()
 
 
