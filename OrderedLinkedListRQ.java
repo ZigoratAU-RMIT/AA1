@@ -148,12 +148,12 @@ public class OrderedLinkedListRQ implements Runqueue {
             return "";
         }
     	
-    	ListNode startPtr = LinkedList;
-    	ListNode temp = startPtr.getLink();
+    	ListNode linkListStart = LinkedList;
+    	ListNode temp = linkListStart.getLink();
     	LinkedList = temp;
         caoacity--;
 
-        return  startPtr.getData().procLabel; // placeholder, modify this
+        return  linkListStart.getData().procLabel; // placeholder, modify this
     } // end of dequeue()
 
 
@@ -191,15 +191,15 @@ public class OrderedLinkedListRQ implements Runqueue {
         }
 
 //        if (end.getData().procLabel.compareTo(procLabel) == 0) {
-//            ListNode startPtr = LinkedList;
-//            ListNode endPtr = LinkedList;
+//            ListNode linkListStart = LinkedList;
+//            ListNode linkListend = LinkedList;
 //
-//            startPtr = startPtr.getLink();
+//            linkListStart = linkListStart.getLink();
 //            while (startPtr.getLink() != null) {
-//                endPtr = startPtr;
-//                startPtr = startPtr.getLink();
+//                linkListend = linkListStart;
+//                linkListStart = linkListStart.getLink();
 //            }
-//            end = endPtr;
+//            end = linkListend;
 //            end.setLink(null);
 //            caoacity--;
 //            return true;
