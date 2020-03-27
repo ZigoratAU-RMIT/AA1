@@ -85,7 +85,7 @@ public class OrderedArrayRQ implements Runqueue {
     	else {
         	int i = 0;
         	for(; i < storeItems ; i++ ) 
-        		if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+        		if(ArrayItems[i].procLabel.compareToIgnoreCase(procLabel) == 0) {
         			return true;
         	}    		
     	}
@@ -101,7 +101,7 @@ public class OrderedArrayRQ implements Runqueue {
     	else {
         	int i = 0;
         	for(; i < storeItems ; i++ ) 
-        		if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+        		if(ArrayItems[i].procLabel.compareToIgnoreCase(procLabel) == 0) {
         			int j = i;
         			ArrayItems[j] = null;
                 	for(; j < storeItems - 1  ; j++ )
@@ -121,7 +121,7 @@ public class OrderedArrayRQ implements Runqueue {
     	int sum = 0;
     	int i = 0;
     		for(; i < storeItems  ; i++ ) {
-    			if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+    			if(ArrayItems[i].procLabel.compareToIgnoreCase(procLabel) == 0) {
     				return sum;
     			}
     			else {
@@ -138,7 +138,7 @@ public class OrderedArrayRQ implements Runqueue {
     	int sum = 0;
     	int i = 0;
     		for(; i < storeItems  ; i++ ) {
-    			if(ArrayItems[i].procLabel.compareTo(procLabel) == 0) {
+    			if(ArrayItems[i].procLabel.compareToIgnoreCase(procLabel) == 0) {
     				int j = i;
     				j++;
                 	for(; j < storeItems  ; j++ )
