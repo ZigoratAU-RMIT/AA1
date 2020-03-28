@@ -1,5 +1,6 @@
 import java.io.PrintWriter;
 import java.lang.String;
+import java.util.Arrays;
 
 /**
  * Implementation of the Runqueue interface using a Binary Search Tree.
@@ -15,73 +16,124 @@ public class BinarySearchTreeRQ implements Runqueue {
      * Constructs empty queue
      */
 	
-	class BstNode {
+	class TreeNode {
 
-		private BstNode left;
-		private BstNode right;
+		private TreeNode left;
+		private TreeNode right;
 		private Item data;
+		int count;
+		String[] Labels;
 
-		public BstNode(Item data) {
-			this.data = data;
+		public TreeNode(Item value) {
+			left = null;
+			right = null;
+			count = 1;
+			Labels = new String[count];
+			Labels[0] = value.procLabel;
+			data = value;
 		}
 
-		public BstNode getLeft() {
+		public void IncreaseArray() {
+			Labels = Arrays.copyOf(Labels, count);	
+		}
+		
+		public void DecreaseArray() {
+			Labels = Arrays.copyOfRange(Labels, 1, Labels.length);	
+		}
+		
+		public TreeNode getLeft() {
 			return left;
 		}
-		public void setLeft(BstNode left) {
-			this.left = left;
+		public void setLeft(TreeNode value) {
+			left = value;
 		}
-		public BstNode getRight() {
+		public TreeNode getRight() {
 			return right;
 		}
-		public void setRight(BstNode right) {
-			this.right = right;
+		public void setRight(TreeNode value) {
+			right = value;
 		}
 
 		public Item getData() {
 			return data;
 		}
 
-		public void setData(Item data) {
-			this.data = data;
+		public void setData(Item value) {
+			data = value;
+		}		
+		
+		public int getCount() {
+			return count;
 		}
-	}
-	
-	class BinarySearchTreeImpl {
 
-		private BstNode root;
+		public void setCount(int value) {
+			count = value;
+		}
+
+		public void increaseCount() {
+			count++;
+		}
+		
+		public void decreaseCount() {
+			count--;
+			if(count < 0)
+				count = 0;
+			Labels = Arrays.copyOfRange(Labels, 1, Labels.length);
+		}
+
+		public String[] getLabels() {
+			return Labels;
+		}
+		public String getLabel() {
+			return Labels[0];
+		}
+
+		public void setLabels(String value) {
+			Labels = Arrays.copyOf(Labels, count);
+			Labels[count - 1] = value;
+		}}
+	
+	class BinarySearchTree {
+
+		private TreeNode root;
 
 		public boolean isEmpty() {
 
-			return (this.root == null);
+			return (root == null);
 		}
 
-		public BstNode getRoot() {
-			return this.root;
+		public TreeNode getRoot() {
+			return root;
 		}
 
-		public void insert(Item data) {
-
+		public void insert(Item data) 
+		{
 			System.out.print("[input: "+data.procLabel+"]");
 			if(root == null) {
-				this.root = new BstNode(data);
-				System.out.println(" -> inserted: "+data.procLabel);
+				root = new TreeNode(data);
+				System.out.println(" -> inserted: "+data.procLabel+ " c=> " +root.getCount());
 				return;
 			}
 
-			insertNode(this.root, data);
-			System.out.print(" -> inserted: "+data.procLabel);
+			insertNode(root, data);
+			System.out.print(" -> inserted: "+data.procLabel+ " c=> " +root.getCount());
 			System.out.println();
 		}
 
-		private BstNode insertNode(BstNode root, Item data) {
-
-			BstNode tmpNode = null;
-			System.out.print(" ->"+root.getData().procLabel+ "vt="+root.getData().vt);
+		private TreeNode insertNode(TreeNode root, Item data) 
+		{
+			TreeNode tmpNode = null;
+			if(root.getData().vt == data.vt)
+			{
+				root.increaseCount();
+				root.setLabels(data.procLabel);				
+				return root;
+			}
+			System.out.print(" ->"+root.getData().procLabel+ "vt="+root.getData().vt+ " c=> " +root.getCount());
 			if(root.getData().vt >= data.vt) {
 				System.out.print(" [L]");
 				if(root.getLeft() == null) {
-					root.setLeft(new BstNode(data));
+					root.setLeft(new TreeNode(data));
 					return root.getLeft();
 				} else {
 					tmpNode = root.getLeft();
@@ -89,7 +141,7 @@ public class BinarySearchTreeRQ implements Runqueue {
 			} else {
 				System.out.print(" [R]");
 				if(root.getRight() == null) {
-					root.setRight(new BstNode(data));
+					root.setRight(new TreeNode(data));
 					return root.getRight();
 				} else {
 					tmpNode = root.getRight();
@@ -99,18 +151,21 @@ public class BinarySearchTreeRQ implements Runqueue {
 			return insertNode(tmpNode, data);
 		}
 
-		public void delete(Item data) {
-
-			deleteNode(this.root, data);
+		public void delete(Item data) 
+		{
+			deleteNode(root, data);
 		}
 
-		public void deleteNode() {
-
-			deleteNode(this.root, minValue(root));
+		
+		public void deleteNode() 
+		{
+			Item item = minValue(root);			
+		 	deleteNode(root, item);
 		}
 		
-		private BstNode deleteNode(BstNode root, Item data) {
-
+		private TreeNode deleteNode(TreeNode root, Item data) 
+		{
+			deletedItem = "";
 			if(root == null) return root;
 
 			System.out.println("ondition is " + data.vt + " ==> " + root.getData().vt);
@@ -119,21 +174,27 @@ public class BinarySearchTreeRQ implements Runqueue {
 			} else if(data.vt > root.getData().vt) {
 				root.setRight(deleteNode(root.getRight(), data));
 			} else {
-				// node with no leaf nodes
+				
+				if(root.getCount() > 1)
+				{
+					root.decreaseCount();
+					Item item = root.getData();
+					deletedItem = root.getData().procLabel;
+					item.procLabel = root.getLabel();
+					root.setData(item);
+					return root;
+				}
+				
 				if(root.getLeft() == null && root.getRight() == null) {
 					System.out.println("deleting "+data.procLabel+ "vt="+data.vt);
 					return null;
 				} else if(root.getLeft() == null) {
-					// node with one node (no left node)
 					System.out.println("deleting "+data.procLabel+ "vt="+data.vt);
 					return root.getRight();
 				} else if(root.getRight() == null) {
-					// node with one node (no right node)
 					System.out.println("deleting "+data.procLabel+ "vt="+data.vt);
 					return root.getLeft();
 				} else {
-					// nodes with two nodes
-					// search for min number in right sub tree
 					Item minValue = minValue(root.getRight());
 					root.setData(minValue);
 					root.setRight(deleteNode(root.getRight(), minValue));
@@ -144,31 +205,41 @@ public class BinarySearchTreeRQ implements Runqueue {
 			return root;
 		}
 
-		private Item minValue(BstNode node) {
-
+		private Item minValue(TreeNode node) 
+		{
 			if(node.getLeft() != null) {
 				return minValue(node.getLeft());
 			}
 			return node.getData();
 		}
 
-		public void inOrderTraversal() {
-			doInOrder(this.root);
+		public void inOrderTraversal() 
+		{
+			doInOrder(root);
 		}
 
-		private void doInOrder(BstNode root) {
-
+		private void doInOrder(TreeNode root) 
+		{
 			if(root == null) return;
 			doInOrder(root.getLeft());
-			System.out.print(root.getData().procLabel+" ");
+
+			if(root.getCount() > 1) {
+			String[] lbl = root.getLabels();
+			for (int i = 0; i < lbl.length; i++) 
+				System.out.print(lbl[i] + "  ");
+			}
+			else {
+				System.out.print(root.getData().procLabel+"=>"+root.getCount()+" ");
+			}
 			doInOrder(root.getRight());
 		}
 	}
 	
-	//private TreeNode root;
-	BinarySearchTreeImpl bst = new BinarySearchTreeImpl();
+	BinarySearchTree bst;
+	String deletedItem = "";
     public BinarySearchTreeRQ() {
         // Implement Me
+    	 bst = new BinarySearchTree();
     }  // end of BinarySearchTreeRQ()
 
 
@@ -176,24 +247,6 @@ public class BinarySearchTreeRQ implements Runqueue {
     public void enqueue(String procLabel, int vt) {
         // Implement me
     	bst.insert(new Item(procLabel,vt));
-//		bst.insert(10);
-//		bst.insert(14);
-//		bst.insert(3);
-//		bst.insert(6);
-//		bst.insert(7);
-//		bst.insert(1);
-//		bst.insert(4);
-//		bst.insert(13);
-//		System.out.println("-------------------");
-//		System.out.println("In Order Traversal");
-//		bst.inOrderTraversal();
-//		System.out.println();
-//		bst.delete(13);
-//		bst.inOrderTraversal();
-//		System.out.println();
-//		bst.delete(14);
-//		bst.inOrderTraversal();
-    	//root = addNode(root ,addItem);
  
     } // end of enqueue()
 
@@ -202,6 +255,8 @@ public class BinarySearchTreeRQ implements Runqueue {
     public String dequeue() {
         // Implement me
     	bst.deleteNode();
+    	if(deletedItem != "")
+    		return deletedItem;
         return ""; // placeholder, modify this
     } // end of dequeue()
 
@@ -241,7 +296,6 @@ public class BinarySearchTreeRQ implements Runqueue {
     @Override
     public void printAllProcesses(PrintWriter os) {
         // Implement me
-    	//printInOrder(root);
     	bst.inOrderTraversal();
     	System.out.println("");
     } // end of printAllProcess()
