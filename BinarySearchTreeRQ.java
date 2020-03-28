@@ -233,20 +233,48 @@ public class BinarySearchTreeRQ implements Runqueue {
 			}
 			doInOrder(root.getRight());
 		}
+		
+		public boolean findProcess(String procLabel)
+		{
+			return dofindProcess(root,procLabel);
+		}
+
+		private boolean dofindProcess(TreeNode root,String procLabel) 
+		{
+			if(root == null)
+				return false;
+			else if(root.getCount() > 1) {
+				boolean find = false;
+				String[] lbl = root.getLabels();
+				for (int i = 0; i < lbl.length; i++) 
+					if(lbl[i].compareToIgnoreCase(procLabel) == 0) {
+						find = true;
+						break;
+					}
+				return find;
+				}
+			else
+				if(root.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
+					return true;			
+			else if(root.getData().procLabel.compareToIgnoreCase(procLabel) < 0)
+				return dofindProcess(root.getLeft(),procLabel);
+			else
+				return dofindProcess(root.getRight(),procLabel);
+		}
 	}
 	
-	BinarySearchTree bst;
+	BinarySearchTree myBinarySearchTree;
 	String deletedItem = "";
     public BinarySearchTreeRQ() {
         // Implement Me
-    	 bst = new BinarySearchTree();
+    	myBinarySearchTree = new BinarySearchTree();
     }  // end of BinarySearchTreeRQ()
 
 
     @Override
     public void enqueue(String procLabel, int vt) {
         // Implement me
-    	bst.insert(new Item(procLabel,vt));
+    	myBinarySearchTree.insert(new Item(procLabel,vt));
  
     } // end of enqueue()
 
@@ -254,7 +282,7 @@ public class BinarySearchTreeRQ implements Runqueue {
     @Override
     public String dequeue() {
         // Implement me
-    	bst.deleteNode();
+    	myBinarySearchTree.deleteNode();
     	if(deletedItem != "")
     		return deletedItem;
         return ""; // placeholder, modify this
@@ -264,8 +292,8 @@ public class BinarySearchTreeRQ implements Runqueue {
     @Override
     public boolean findProcess(String procLabel) {
         // Implement me
-
-        return false; // placeholder, modify this
+    	return myBinarySearchTree.findProcess(procLabel);
+        //return false; // placeholder, modify this
     } // end of findProcess()
 
 
@@ -296,7 +324,7 @@ public class BinarySearchTreeRQ implements Runqueue {
     @Override
     public void printAllProcesses(PrintWriter os) {
         // Implement me
-    	bst.inOrderTraversal();
+    	myBinarySearchTree.inOrderTraversal();
     	System.out.println("");
     } // end of printAllProcess()
 
