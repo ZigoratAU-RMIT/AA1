@@ -12,8 +12,8 @@ import java.lang.String;
 
 
 class ListNode {
-    ListNode link = null;
-    Item data = new Item();
+    private ListNode link = null;
+    private Item data = new Item();
 
     public ListNode() {
         link = null;
@@ -26,11 +26,11 @@ class ListNode {
         this.link = null;
     }
 
-    public ListNode getLink() {
+    public ListNode getPointer() {
         return link;
     }
 
-    public void setLink(ListNode link) {
+    public void setPointer(ListNode link) {
         this.link = link;
     }
 
@@ -41,7 +41,6 @@ class ListNode {
     public void setData(Item data) {
         this.data = data;
     }
-
 }
 
 
@@ -69,16 +68,16 @@ public class OrderedLinkedListRQ implements Runqueue {
     		return 0;
     	if(LinkedList.getData().vt >= item.vt)
     		return 0;
-        if(LinkedList.getLink() != null && end.getData().vt >= item.vt)
+        if(LinkedList.getPointer() != null && end.getData().vt >= item.vt)
     		return caoacity;
         
     	ListNode findItemStart = LinkedList;
     	int pos = 1;
-    	while(findItemStart.getLink() != null) {
+    	while(findItemStart.getPointer() != null) {
     		++pos;
     		if(findItemStart.getData().vt >= item.vt) 	    			
     			break;
-    		findItemStart = findItemStart.getLink();
+    		findItemStart = findItemStart.getPointer();
     	}
     	if(findItemStart.getData().vt >= item.vt)
     		return pos;
@@ -91,7 +90,7 @@ public class OrderedLinkedListRQ implements Runqueue {
             LinkedList = nptr;
             end = LinkedList;
         } else {
-            nptr.setLink(LinkedList);
+            nptr.setPointer(LinkedList);
             LinkedList = nptr;
         }
         caoacity++;
@@ -103,7 +102,7 @@ public class OrderedLinkedListRQ implements Runqueue {
             LinkedList = nptr;
             end = nptr;
         } else {
-            end.setLink(nptr);
+            end.setPointer(nptr);
             end = nptr;
         }
         caoacity++;
@@ -128,12 +127,12 @@ public class OrderedLinkedListRQ implements Runqueue {
     	        ListNode ptr = LinkedList;
     	        for (int i = 1; i <= caoacity; i++) {
     	            if (i == itemPosition) {
-    	                ListNode temp = ptr.getLink();
-    	                ptr.setLink(nptr);
-    	                nptr.setLink(temp);
+    	                ListNode temp = ptr.getPointer();
+    	                ptr.setPointer(nptr);
+    	                nptr.setPointer(temp);
     	                break;
     	            }
-    	            ptr = ptr.getLink();
+    	            ptr = ptr.getPointer();
     	        }
     	        caoacity++;
     		}
@@ -149,7 +148,7 @@ public class OrderedLinkedListRQ implements Runqueue {
         }
     	
     	ListNode linkListStart = LinkedList;
-    	ListNode temp = linkListStart.getLink();
+    	ListNode temp = linkListStart.getPointer();
     	LinkedList = temp;
         caoacity--;
 
@@ -164,11 +163,11 @@ public class OrderedLinkedListRQ implements Runqueue {
     	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
     		return true;
     	
-    	processsItem = LinkedList.getLink();
-        while (processsItem != null && processsItem.getLink() != null) {
+    	processsItem = LinkedList.getPointer();
+        while (processsItem != null && processsItem.getPointer() != null) {
         	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
         		return true;
-        	processsItem = processsItem.getLink();
+        	processsItem = processsItem.getPointer();
         }
         return false; // placeholder, modify this
     } // end of findProcess()
@@ -177,15 +176,15 @@ public class OrderedLinkedListRQ implements Runqueue {
     @Override
     public boolean removeProcess(String procLabel) {
         // Implement me
-    	if (LinkedList.getData().procLabel.compareToIgnoreCase(procLabel) == 0 && LinkedList.getLink() == null) {
+    	if (LinkedList.getData().procLabel.compareToIgnoreCase(procLabel) == 0 && LinkedList.getPointer() == null) {
             LinkedList = null;
             end = null;
             caoacity--;
             return true;
         }
 
-        if (LinkedList.getData().procLabel.compareToIgnoreCase(procLabel) == 0 && LinkedList.getLink() != null) {
-            LinkedList = LinkedList.getLink();
+        if (LinkedList.getData().procLabel.compareToIgnoreCase(procLabel) == 0 && LinkedList.getPointer() != null) {
+            LinkedList = LinkedList.getPointer();
             caoacity--;
             return true;
         }
@@ -194,28 +193,28 @@ public class OrderedLinkedListRQ implements Runqueue {
 //            ListNode linkListStart = LinkedList;
 //            ListNode linkListend = LinkedList;
 //
-//            linkListStart = linkListStart.getLink();
-//            while (startPtr.getLink() != null) {
+//            linkListStart = linkListStart.getPointer();
+//            while (startPtr.getPointer() != null) {
 //                linkListend = linkListStart;
-//                linkListStart = linkListStart.getLink();
+//                linkListStart = linkListStart.getPointer();
 //            }
 //            end = linkListend;
-//            end.setLink(null);
+//            end.setPointer(null);
 //            caoacity--;
 //            return true;
 //        }
 
         ListNode startPtr = LinkedList;
         ListNode prevLink = startPtr;
-        startPtr = startPtr.getLink();
-        while (startPtr != null && startPtr.getData().procLabel.compareToIgnoreCase(procLabel) != 0  && startPtr.getLink() != null) {
+        startPtr = startPtr.getPointer();
+        while (startPtr != null && startPtr.getData().procLabel.compareToIgnoreCase(procLabel) != 0  && startPtr.getPointer() != null) {
             prevLink = startPtr;
-            startPtr = startPtr.getLink();
+            startPtr = startPtr.getPointer();
         }
         if (startPtr != null && startPtr.getData().procLabel.compareToIgnoreCase(procLabel) == 0) {
-            ListNode temp = prevLink.getLink();
-            temp = temp.getLink();
-            prevLink.setLink(temp);
+            ListNode temp = prevLink.getPointer();
+            temp = temp.getPointer();
+            prevLink.setPointer(temp);
             caoacity--;
             return true;
         }
@@ -234,12 +233,12 @@ public class OrderedLinkedListRQ implements Runqueue {
 		else
 			sum = processsItem.getData().vt;
 		
-		processsItem = LinkedList.getLink();
-	    while (processsItem != null && processsItem.getLink() != null) {
+		processsItem = LinkedList.getPointer();
+	    while (processsItem != null && processsItem.getPointer() != null) {
 	    	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
 	    		return sum;
 	    	sum = sum + processsItem.getData().vt;
-	    	processsItem = processsItem.getLink();
+	    	processsItem = processsItem.getPointer();
 	    }    	
         return -1; // placeholder, modify this
     } // end of precedingProcessTime()
@@ -255,14 +254,14 @@ public class OrderedLinkedListRQ implements Runqueue {
 		else
 			sum = processsItem.getData().vt;
 		
-		processsItem = LinkedList.getLink();
+		processsItem = LinkedList.getPointer();
 		boolean find = false;
-	    while (processsItem != null && processsItem.getLink() != null) {
+	    while (processsItem != null && processsItem.getPointer() != null) {
 	    	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
 	    		find = true;
 	    	if(find)
 	    		sum = sum + processsItem.getData().vt;
-	    	processsItem = processsItem.getLink();
+	    	processsItem = processsItem.getPointer();
 	    } 
 	    if(find)
 	    	return sum;
@@ -277,17 +276,17 @@ public class OrderedLinkedListRQ implements Runqueue {
             return;
         }
 
-        if (LinkedList.getLink() == null) {
+        if (LinkedList.getPointer() == null) {
             System.out.println(LinkedList.getData().procLabel);
             return;
         }
 
         ListNode printItem = LinkedList;
         System.out.print(printItem.getData().procLabel + "  ");
-        printItem = LinkedList.getLink();
-        while (printItem.getLink() != null) {
+        printItem = LinkedList.getPointer();
+        while (printItem.getPointer() != null) {
             System.out.print(printItem.getData().procLabel + "  ");
-            printItem = printItem.getLink();
+            printItem = printItem.getPointer();
         }
         System.out.println(printItem.getData().procLabel + "\n");
     } // end of printAllProcess()
