@@ -108,16 +108,12 @@ public class BinarySearchTreeRQ implements Runqueue {
 
 		public void insert(Item data) 
 		{
-			System.out.print("[input: "+data.procLabel+"]");
 			if(root == null) {
 				root = new TreeNode(data);
-				System.out.println(" -> inserted: "+data.procLabel+ " c=> " +root.getCount());
 				return;
 			}
 
 			insertNode(root, data);
-			System.out.print(" -> inserted: "+data.procLabel+ " c=> " +root.getCount());
-			System.out.println();
 		}
 
 		private TreeNode insertNode(TreeNode root, Item data) 
@@ -129,9 +125,7 @@ public class BinarySearchTreeRQ implements Runqueue {
 				root.setLabels(data.procLabel);				
 				return root;
 			}
-			System.out.print(" ->"+root.getData().procLabel+ "vt="+root.getData().vt+ " c=> " +root.getCount());
 			if(root.getData().vt >= data.vt) {
-				System.out.print(" [L]");
 				if(root.getLeft() == null) {
 					root.setLeft(new TreeNode(data));
 					return root.getLeft();
@@ -139,7 +133,6 @@ public class BinarySearchTreeRQ implements Runqueue {
 					tmpNode = root.getLeft();
 				}
 			} else {
-				System.out.print(" [R]");
 				if(root.getRight() == null) {
 					root.setRight(new TreeNode(data));
 					return root.getRight();
@@ -160,7 +153,7 @@ public class BinarySearchTreeRQ implements Runqueue {
 		public void deleteNode() 
 		{
 			Item item = minValue(root);			
-		 	deleteNode(root, item);
+			deleteNode(root, item);
 		}
 		
 		private TreeNode deleteNode(TreeNode root, Item data) 
@@ -168,7 +161,6 @@ public class BinarySearchTreeRQ implements Runqueue {
 			deletedItem = "";
 			if(root == null) return root;
 
-			System.out.println("ondition is " + data.vt + " ==> " + root.getData().vt);
 			if(data.vt < root.getData().vt) {
 				root.setLeft(deleteNode(root.getLeft(), data));
 			} else if(data.vt > root.getData().vt) {
@@ -186,22 +178,21 @@ public class BinarySearchTreeRQ implements Runqueue {
 				}
 				
 				if(root.getLeft() == null && root.getRight() == null) {
-					System.out.println("deleting "+data.procLabel+ "vt="+data.vt);
+					deletedItem = data.procLabel;
 					return null;
 				} else if(root.getLeft() == null) {
-					System.out.println("deleting "+data.procLabel+ "vt="+data.vt);
+					deletedItem = data.procLabel;
 					return root.getRight();
 				} else if(root.getRight() == null) {
-					System.out.println("deleting "+data.procLabel+ "vt="+data.vt);
+					deletedItem = data.procLabel;
 					return root.getLeft();
 				} else {
 					Item minValue = minValue(root.getRight());
 					root.setData(minValue);
 					root.setRight(deleteNode(root.getRight(), minValue));
-					System.out.println("deleting "+data.procLabel+ "vt="+root.getData().vt);
+					deletedItem = data.procLabel;
 				}
 			}
-
 			return root;
 		}
 
@@ -229,7 +220,7 @@ public class BinarySearchTreeRQ implements Runqueue {
 				System.out.print(lbl[i] + "  ");
 			}
 			else {
-				System.out.print(root.getData().procLabel+"=>"+root.getCount()+" ");
+				System.out.print(root.getData().procLabel +" ");
 			}
 			doInOrder(root.getRight());
 		}
@@ -261,10 +252,79 @@ public class BinarySearchTreeRQ implements Runqueue {
 			else
 				return dofindProcess(root.getRight(),procLabel);
 		}
+		
+		
+		public boolean findItemToRemove(String procLabel)
+		{
+			TreeNode deleteNode = doFindItemToRemove(root,procLabel);
+			if(deleteNode == null)
+				return false;
+			TreeNode item = deleteNode(root, deleteNode.getData());
+			return item != null;
+		}
+		
+		private TreeNode doFindItemToRemove(TreeNode root,String procLabel) 
+		{
+			if(root == null)
+				return null;
+			else 
+				if(root.getCount() > 1) {
+				String[] lbl = root.getLabels();
+				for (int i = 0; i < lbl.length; i++) 
+					if(lbl[i].compareToIgnoreCase(procLabel) == 0) {
+						return root;
+					}
+				return root;
+				}
+			else
+				if(root.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
+					return root;			
+			else if(root.getData().procLabel.compareToIgnoreCase(procLabel) < 0)
+				return doFindItemToRemove(root.getLeft(),procLabel);
+			else
+				return doFindItemToRemove(root.getRight(),procLabel);
+		}
+		
+		public int precedingProcessTime(String procLabel) {
+			clculationCost = 0;
+			doprecedingProcessTime(root,procLabel);
+			return clculationCost;
+		}
+		
+		private TreeNode doprecedingProcessTime(TreeNode root,String procLabel) 
+		{
+			if(root == null)
+				return null;
+			else 
+				if(root.getCount() > 1) {
+				String[] lbl = root.getLabels();
+				for (int i = 0; i < lbl.length; i++) {
+					clculationCost = clculationCost + root.getData().vt;
+					if(lbl[i].compareToIgnoreCase(procLabel) == 0) {
+						return root;
+					}
+				}
+				return root;
+				}
+			else
+				if(root.getData().procLabel.compareToIgnoreCase(procLabel) == 0) { 
+					clculationCost = clculationCost + root.getData().vt;
+					return root;			
+				}
+			else if(root.getData().procLabel.compareToIgnoreCase(procLabel) < 0) {
+				clculationCost = clculationCost + root.getData().vt;
+				return doFindItemToRemove(root.getLeft(),procLabel);
+			}
+			else {
+				clculationCost = clculationCost + root.getData().vt;
+				return doFindItemToRemove(root.getRight(),procLabel);
+			}
+		}
 	}
 	
 	BinarySearchTree myBinarySearchTree;
 	String deletedItem = "";
+	int clculationCost = 0;
     public BinarySearchTreeRQ() {
         // Implement Me
     	myBinarySearchTree = new BinarySearchTree();
@@ -300,15 +360,18 @@ public class BinarySearchTreeRQ implements Runqueue {
     @Override
     public boolean removeProcess(String procLabel) {
         // Implement me
-
-        return false; // placeholder, modify this
+    	return myBinarySearchTree.findItemToRemove(procLabel);
+        //return false; // placeholder, modify this
     } // end of removeProcess()
 
 
     @Override
     public int precedingProcessTime(String procLabel) {
         // Implement me
-
+    	int value = myBinarySearchTree.precedingProcessTime(procLabel);
+    	if( value != 0)
+    		return value;
+    	else
         return -1; // placeholder, modify this
     } // end of precedingProcessTime()
 
