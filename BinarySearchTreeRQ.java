@@ -291,35 +291,71 @@ public class BinarySearchTreeRQ implements Runqueue {
 			return clculationCost;
 		}
 		
-		private TreeNode doprecedingProcessTime(TreeNode root,String procLabel) 
-		{
-			if(root == null)
-				return null;
-			else 
-				if(root.getCount() > 1) {
-				String[] lbl = root.getLabels();
-				for (int i = 0; i < lbl.length; i++) {
+		private void doprecedingProcessTime(TreeNode root,String procLabel) 
+		{			
+			if(root == null) return;
+			doprecedingProcessTime(root.getLeft(),procLabel);
+
+			if(root.getCount() > 1) {
+			String[] lbl = root.getLabels();
+			for (int i = 0; i < lbl.length; i++) 
+				if(lbl[i].compareToIgnoreCase(procLabel) == 0)
+					return;
+				else
 					clculationCost = clculationCost + root.getData().vt;
-					if(lbl[i].compareToIgnoreCase(procLabel) == 0) {
-						return root;
-					}
-				}
-				return root;
-				}
-			else
-				if(root.getData().procLabel.compareToIgnoreCase(procLabel) == 0) { 
-					clculationCost = clculationCost + root.getData().vt;
-					return root;			
-				}
-			else if(root.getData().procLabel.compareToIgnoreCase(procLabel) < 0) {
-				clculationCost = clculationCost + root.getData().vt;
-				return doFindItemToRemove(root.getLeft(),procLabel);
 			}
 			else {
-				clculationCost = clculationCost + root.getData().vt;
-				return doFindItemToRemove(root.getRight(),procLabel);
+				if(root.getData().procLabel.compareToIgnoreCase(procLabel) != 0)
+					clculationCost = clculationCost + root.getData().vt;
+				else
+					return;
 			}
+			doprecedingProcessTime(root.getRight(),procLabel);
+		}		
+		
+		public int succeedingProcessTime(String procLabel) {
+			clculationCost = 0;
+			TreeNode item =doSucceedingProcessTime(root,procLabel);
+			if(item != null) {
+				clculationCost = clculationCost - item.getData().vt;
+				calculateSucceedingProcessTime(item,procLabel);
+			}
+			return clculationCost;
 		}
+		
+		private TreeNode doSucceedingProcessTime(TreeNode root,String procLabel) 
+		{			
+			if(root == null) return null;
+			doSucceedingProcessTime(root.getLeft(),procLabel);
+
+			if(root.getCount() > 1) {
+			String[] lbl = root.getLabels();
+			for (int i = 0; i < lbl.length; i++) 
+				if(lbl[i].compareToIgnoreCase(procLabel) == 0)
+					return root;
+			}
+			else {
+				if(root.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
+					return root;
+			}
+			return doSucceedingProcessTime(root.getRight(),procLabel);
+		}
+		
+		private void calculateSucceedingProcessTime(TreeNode root,String procLabel) 
+		{			
+			if(root == null) return;
+			calculateSucceedingProcessTime(root.getLeft(),procLabel);
+
+			if(root.getCount() > 1) {
+			String[] lbl = root.getLabels();
+			for (int i = 0; i < lbl.length; i++) 
+					clculationCost = clculationCost + root.getData().vt;
+			}
+			else {
+					clculationCost = clculationCost + root.getData().vt;
+			}
+			calculateSucceedingProcessTime(root.getRight(),procLabel);
+		}	
 	}
 	
 	BinarySearchTree myBinarySearchTree;
@@ -379,6 +415,10 @@ public class BinarySearchTreeRQ implements Runqueue {
     @Override
     public int succeedingProcessTime(String procLabel) {
         // Implement me
+    	int value = myBinarySearchTree.succeedingProcessTime(procLabel);
+    	if( value != 0)
+    		return value;
+    	else
 
         return -1; // placeholder, modify this
     } // end of precedingProcessTime()
