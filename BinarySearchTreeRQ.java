@@ -287,8 +287,13 @@ public class BinarySearchTreeRQ implements Runqueue {
 		
 		public int precedingProcessTime(String procLabel) {
 			clculationCost = 0;
-			doprecedingProcessTime(root,procLabel);
-			return clculationCost;
+			TreeNode item = doSucceedingProcessTime(root,procLabel);
+			if(item != null) {
+				doprecedingProcessTime(root,procLabel);
+			    return clculationCost;
+			}
+			else 
+				return -1;
 		}
 		
 		private void doprecedingProcessTime(TreeNode root,String procLabel) 
@@ -315,7 +320,7 @@ public class BinarySearchTreeRQ implements Runqueue {
 		
 		public int succeedingProcessTime(String procLabel) {
 			clculationCost = 0;
-			TreeNode item =doSucceedingProcessTime(root,procLabel);
+			TreeNode item = doSucceedingProcessTime(root,procLabel);
 			if(item != null) {
 				clculationCost = clculationCost - item.getData().vt;
 				calculateSucceedingProcessTime(item,procLabel);
