@@ -66,20 +66,20 @@ public class OrderedLinkedListRQ implements Runqueue {
     public int findItemPosition(Item item) {
     	if(LinkedList == null)
     		return 0;
-    	if(LinkedList.getData().vt >= item.vt)
+    	if(LinkedList.getData().vt > item.vt)
     		return 0;
-        if(LinkedList.getPointer() != null && end.getData().vt >= item.vt)
+        if(LinkedList.getPointer() != null && end.getData().vt > item.vt)
     		return caoacity;
         
     	ListNode findItemStart = LinkedList;
     	int pos = 1;
     	while(findItemStart.getPointer() != null) {
     		++pos;
-    		if(findItemStart.getData().vt >= item.vt) 	    			
+    		if(findItemStart.getData().vt > item.vt) 	    			
     			break;
     		findItemStart = findItemStart.getPointer();
     	}
-    	if(findItemStart.getData().vt >= item.vt)
+    	if(findItemStart.getData().vt > item.vt)
     		return pos;
     	return -1;
     }
@@ -159,15 +159,15 @@ public class OrderedLinkedListRQ implements Runqueue {
     @Override
     public boolean findProcess(String procLabel) {
         // Implement me
-    	ListNode processsItem = LinkedList;
-    	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
+    	ListNode processItem = LinkedList;
+    	if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
     		return true;
     	
-    	processsItem = LinkedList.getPointer();
-        while (processsItem != null && processsItem.getPointer() != null) {
-        	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
+    	processItem = LinkedList.getPointer();
+        while (processItem != null && processItem.getPointer() != null) {
+        	if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
         		return true;
-        	processsItem = processsItem.getPointer();
+        	processItem = processItem.getPointer();
         }
         return false; // placeholder, modify this
     } // end of findProcess()
@@ -227,19 +227,17 @@ public class OrderedLinkedListRQ implements Runqueue {
     public int precedingProcessTime(String procLabel) {
         // Implement me
 		int sum = 0;
-		ListNode processsItem = LinkedList;
-		if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
-			return processsItem.getData().vt;
-		else
-			sum = processsItem.getData().vt;
+		ListNode processItem = LinkedList;
+		if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
+			return sum;
 		
-		processsItem = LinkedList.getPointer();
-	    while (processsItem != null && processsItem.getPointer() != null) {
-	    	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
+		processItem = LinkedList.getPointer();
+	    while (processItem != null && processItem.getPointer() != null) {
+	    	if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
 	    		return sum;
-	    	sum = sum + processsItem.getData().vt;
-	    	processsItem = processsItem.getPointer();
-	    }    	
+	    	sum = sum + processItem.getData().vt;
+	    	processItem = processItem.getPointer();
+	    }  
         return -1; // placeholder, modify this
     } // end of precedingProcessTime()
 
@@ -248,22 +246,25 @@ public class OrderedLinkedListRQ implements Runqueue {
     public int succeedingProcessTime(String procLabel) {
         // Implement me
     	int sum = 0;
-		ListNode processsItem = LinkedList;
-		if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
-			return processsItem.getData().vt;
-		else
-			sum = processsItem.getData().vt;
+		ListNode processItem = LinkedList;
+		if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
+			return sum;
 		
-		processsItem = LinkedList.getPointer();
+		processItem = LinkedList.getPointer();
 		boolean find = false;
-	    while (processsItem != null && processsItem.getPointer() != null) {
-	    	if(processsItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
+	    while (processItem != null && processItem.getPointer() != null) {
+	    	if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) { 
 	    		find = true;
-	    	if(find)
-	    		sum = sum + processsItem.getData().vt;
-	    	processsItem = processsItem.getPointer();
+	    		processItem = processItem.getPointer();
+	    	} else {
+	    	//if(find)
+	    		sum += processItem.getData().vt;
+	    		processItem = processItem.getPointer();
+	    	}
 	    } 
-	    if(find)
+	    if(processItem.getData() != null)
+	    	sum += processItem.getData().vt;
+	    if(sum > 0 && find == true)
 	    	return sum;
         return -1; // placeholder, modify this
     } // end of precedingProcessTime()
