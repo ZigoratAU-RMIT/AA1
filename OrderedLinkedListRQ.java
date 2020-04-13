@@ -64,24 +64,18 @@ public class OrderedLinkedListRQ implements Runqueue {
 
 
     public int findItemPosition(Item item) {
-    	if(LinkedList == null)
-    		return 0;
-    	if(LinkedList.getData().vt > item.vt)
-    		return 0;
-        if(LinkedList.getPointer() != null && end.getData().vt > item.vt)
-    		return caoacity;
-        
     	ListNode findItemStart = LinkedList;
-    	int pos = 1;
-    	while(findItemStart.getPointer() != null) {
+        if(findItemStart == null || findItemStart.getData().vt > item.vt)
+    		return 0;
+    	int pos = 0;
+    	findItemStart = findItemStart.getPointer();
+    	while(findItemStart != null && findItemStart.getPointer() != null) {
     		++pos;
     		if(findItemStart.getData().vt > item.vt) 	    			
-    			break;
+    			return pos;
     		findItemStart = findItemStart.getPointer();
     	}
-    	if(findItemStart.getData().vt > item.vt)
-    		return pos;
-    	return -1;
+    	return caoacity;
     }
     
     public void addHead(Item item) {
@@ -228,17 +222,14 @@ public class OrderedLinkedListRQ implements Runqueue {
         // Implement me
 		int sum = 0;
 		ListNode processItem = LinkedList;
-		if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
-			return sum;
-		
-		processItem = LinkedList.getPointer();
+
 	    while (processItem != null && processItem.getPointer() != null) {
 	    	if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) 
 	    		return sum;
 	    	sum = sum + processItem.getData().vt;
 	    	processItem = processItem.getPointer();
 	    }  
-        return -1; // placeholder, modify this
+        return sum; // placeholder, modify this
     } // end of precedingProcessTime()
 
 
@@ -247,26 +238,18 @@ public class OrderedLinkedListRQ implements Runqueue {
         // Implement me
     	int sum = 0;
 		ListNode processItem = LinkedList;
-		if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
-			return sum;
-		
-		processItem = LinkedList.getPointer();
 		boolean find = false;
-	    while (processItem != null && processItem.getPointer() != null) {
+	    while (processItem != null && processItem.getData() != null) {
 	    	if(processItem.getData().procLabel.compareToIgnoreCase(procLabel) == 0) { 
 	    		find = true;
 	    		processItem = processItem.getPointer();
 	    	} else {
-	    	//if(find)
+	    	if(find)
 	    		sum += processItem.getData().vt;
 	    		processItem = processItem.getPointer();
 	    	}
 	    } 
-	    if(processItem.getData() != null)
-	    	sum += processItem.getData().vt;
-	    if(sum > 0 && find == true)
-	    	return sum;
-        return -1; // placeholder, modify this
+        return sum; // placeholder, modify this
     } // end of precedingProcessTime()
 
 

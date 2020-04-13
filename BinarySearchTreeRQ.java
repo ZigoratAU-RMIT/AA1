@@ -96,6 +96,8 @@ public class BinarySearchTreeRQ implements Runqueue {
 	class BinarySearchTree {
 
 		private TreeNode root;
+		private String findProcLabel;
+		boolean findNode = false;
 
 		public boolean isEmpty() {
 
@@ -286,80 +288,82 @@ public class BinarySearchTreeRQ implements Runqueue {
 		}
 		
 		public int precedingProcessTime(String procLabel) {
+			
+			//TreeNode head = root.getData().vt
+//			while (root != null) {
+//	            if (root.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
+//	            	clculationCost = clculationCost + root.getData().vt;
+//
+//	            if (value < (int) root.data)
+//	                root = root.left;
+//
+//	            else
+//	                root = root.right;
+//	        }
+			
+			
 			clculationCost = 0;
-			TreeNode item = doSucceedingProcessTime(root,procLabel);
-			if(item != null) {
-				doprecedingProcessTime(root,procLabel);
-			    return clculationCost;
-			}
-			else 
-				return -1;
+			findNode = false;
+			findProcLabel = procLabel;
+				doprecedingProcessTime(root);
+				if(findNode)
+					return clculationCost;
+				else
+					return -1;
 		}
 		
-		private void doprecedingProcessTime(TreeNode root,String procLabel) 
+		private void doprecedingProcessTime(TreeNode root) 
 		{			
-			if(root == null) return;
-			doprecedingProcessTime(root.getLeft(),procLabel);
+			if(root == null)
+				return;
+			doprecedingProcessTime(root.getLeft());
+			doprecedingProcessTime(root.getRight());
+			if(root.getData().procLabel.compareToIgnoreCase(findProcLabel) == 0) {
+				findNode = true;
+				//return;
+			}else
+				if(!findNode) {
+					if(root.getCount() > 1) {
+						String[] lbl = root.getLabels();
+						for (int i = 0; i < lbl.length; i++) 
+								clculationCost = clculationCost + root.getData().vt;
+					}
+					else
+						clculationCost = clculationCost + root.getData().vt;
+				}
 
-			if(root.getCount() > 1) {
-			String[] lbl = root.getLabels();
-			for (int i = 0; i < lbl.length; i++) 
-				if(lbl[i].compareToIgnoreCase(procLabel) == 0)
-					return;
-				else
-					clculationCost = clculationCost + root.getData().vt;
-			}
-			else {
-				if(root.getData().procLabel.compareToIgnoreCase(procLabel) != 0)
-					clculationCost = clculationCost + root.getData().vt;
-				else
-					return;
-			}
-			doprecedingProcessTime(root.getRight(),procLabel);
 		}		
 		
 		public int succeedingProcessTime(String procLabel) {
 			clculationCost = 0;
-			TreeNode item = doSucceedingProcessTime(root,procLabel);
-			if(item != null) {
-				clculationCost = clculationCost - item.getData().vt;
-				calculateSucceedingProcessTime(item,procLabel);
-			}
-			return clculationCost;
+			findNode = false;
+			findProcLabel = procLabel;
+			doSucceedingProcessTime(root);
+			if(findNode)
+				return clculationCost;
+			else
+				return -1;
 		}
 		
-		private TreeNode doSucceedingProcessTime(TreeNode root,String procLabel) 
+		private void doSucceedingProcessTime(TreeNode root) 
 		{			
-			if(root == null) return null;
-			doSucceedingProcessTime(root.getLeft(),procLabel);
+			if(root == null)
+				return;
+			doSucceedingProcessTime(root.getLeft());
+			doSucceedingProcessTime(root.getRight());
+			if(root.getData().procLabel.compareToIgnoreCase(findProcLabel) == 0) {
+				findNode = true;
+			}else
+				if(findNode) {
+					if(root.getCount() > 1) {
+						String[] lbl = root.getLabels();
+						for (int i = 0; i < lbl.length; i++) 
+								clculationCost = clculationCost + root.getData().vt;
+					}
+					else
+						clculationCost = clculationCost + root.getData().vt;
+				}
 
-			if(root.getCount() > 1) {
-			String[] lbl = root.getLabels();
-			for (int i = 0; i < lbl.length; i++) 
-				if(lbl[i].compareToIgnoreCase(procLabel) == 0)
-					return root;
-			}
-			else {
-				if(root.getData().procLabel.compareToIgnoreCase(procLabel) == 0)
-					return root;
-			}
-			return doSucceedingProcessTime(root.getRight(),procLabel);
-		}
-		
-		private void calculateSucceedingProcessTime(TreeNode root,String procLabel) 
-		{			
-			if(root == null) return;
-			calculateSucceedingProcessTime(root.getLeft(),procLabel);
-
-			if(root.getCount() > 1) {
-			String[] lbl = root.getLabels();
-			for (int i = 0; i < lbl.length; i++) 
-					clculationCost = clculationCost + root.getData().vt;
-			}
-			else {
-					clculationCost = clculationCost + root.getData().vt;
-			}
-			calculateSucceedingProcessTime(root.getRight(),procLabel);
 		}	
 	}
 	
@@ -413,7 +417,7 @@ public class BinarySearchTreeRQ implements Runqueue {
     	if( value != 0)
     		return value;
     	else
-        return -1; // placeholder, modify this
+        return 0; // placeholder, modify this
     } // end of precedingProcessTime()
 
 
@@ -425,7 +429,7 @@ public class BinarySearchTreeRQ implements Runqueue {
     		return value;
     	else
 
-        return -1; // placeholder, modify this
+        return 0; // placeholder, modify this
     } // end of precedingProcessTime()
 
 
